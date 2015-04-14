@@ -17,20 +17,13 @@
  */
 
 #include <linux/aufs_type.h>
-#include <regex.h>
 #include <stdio.h>
 #include <string.h>
 #include "au_util.h"
 
 int main(int argc, char *argv[])
 {
-	regex_t preg;
-	const char *pat = "^4\\.[0-9][0-9]";
-
-	if (regcomp(&preg, pat, REG_EXTENDED | REG_NOSUB))
-		AuFin("regcomp");
-
-	if (!regexec(&preg, AUFS_VERSION, 0, NULL, 0))
+	if (!strncmp(AUFS_VERSION, "4.x-rcN", 7))
 		return 0;
 
 	puts("Wrong version!\n"
