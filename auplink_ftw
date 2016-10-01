@@ -46,7 +46,7 @@ list)
 	;;
 cpup)
 	Find |
-	xargs -r0 touch -a
+	xargs -r0 touch -ac
 	;;
 *)
 	echo Usage
