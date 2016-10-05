@@ -181,7 +181,7 @@ install_man: install_man5 install_man8
 install_ulib:
 	${MAKE} -C libau $@
 
-install: install_man install_sbin install_ubin install_etc install_ulib
+install: all install_man install_sbin install_ubin install_etc install_ulib
 	$(call MakeFHSM, $@)
 
 -include priv.mk
