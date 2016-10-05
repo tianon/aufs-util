@@ -44,8 +44,9 @@ define MakeFHSM
 	${MAKE} -C fhsm ${1}
 endef
 else
+# empty
 define MakeFHSM
-	# empty
+	@:
 endef
 endif
 
