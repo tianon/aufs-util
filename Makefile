@@ -54,23 +54,30 @@ LibUtilObj += perror.o proc_mnt.o br.o plink.o mtab.o
 LibUtilHdr = au_util.h
 
 TopDir = ${CURDIR}
+LastTestGlibc = test_glibc
 # don't use -q for fgrep here since it exits when the string is found,
 # and it causes the broken pipe error.
 define test_glibc
-	$(shell ${1} ${CPPFLAGS} -I ${TopDir}/extlib/non-glibc -E -P -dM ${2} |\
+	$(shell cat ${LastTestGlibc} 2> /dev/null || \
+		{ ${1} ${CPPFLAGS} -I ${TopDir}/extlib/non-glibc -E -P -dM ${2} |\
 		fgrep -w __GNU_LIBRARY__ > /dev/null && \
 		echo yes || \
-		echo no)
+		echo no; } |\
+		tee ${LastTestGlibc})
 endef
-$(eval Glibc=$(call test_glibc, ${CC}, ver.c))
+$(filter-out clean, ${MAKECMDGOALS} all): \
+	$(eval Glibc=$(call test_glibc, ${CC}, ver.c))
 #$(warning Glibc=${Glibc})
 
 LibAuDir ?= /usr/lib
+ExtlibGlibcObj = au_nftw.o
+ExtlibNonGlibcObj = ${ExtlibGlibcObj} au_decode_mntpnt.o error_at_line.o
+
 ExtlibPath = extlib/glibc
-ExtlibObj = au_nftw.o
+ExtlibObj = ${ExtlibGlibcObj}
 ifeq (${Glibc},no)
 ExtlibPath = extlib/non-glibc
-ExtlibObj += au_decode_mntpnt.o error_at_line.o
+ExtlibObj = ${ExtlibNonGlibcObj}
 LibUtilHdr += ${ExtlibPath}/error_at_line.h
 override CPPFLAGS += -I${CURDIR}/${ExtlibPath}
 endif
@@ -99,9 +106,9 @@ all: ver_test ${Man} ${Bin} ${Etc}
 	$(call MakeFHSM, $@)
 
 clean:
-	${RM} ${Man} ${Bin} ${Etc} ${LibUtil} libau.so* *~
+	${RM} ${Man} ${Bin} ${Etc} ${LibUtil} libau.so* ${LastTestGlibc} *~
 	${RM} ${BinObj} ${LibUtilObj}
-	for i in ${ExtlibSrc}; \
+	for i in $(patsubst %.o,%.c, ${ExtlibGlibcObj} ${ExtlibNonGlibcObj}); \
 	do test -L $${i} && ${RM} $${i} || :; \
 	done
 	${MAKE} -C libau $@
