@@ -65,20 +65,7 @@ endef
 $(eval Glibc=$(call test_glibc, ${CC}, ver.c))
 #$(warning Glibc=${Glibc})
 
-ifneq (${CC},${HOSTCC})
-	ifeq (${LibAuDir},)
-$(warning Warning: CC is set, but LibAuDir.)
-		LibAuDir = $(shell ldconfig -p | \
-			fgrep libc. | \
-			head -n 1 | \
-			cut -f2 -d'>' | \
-			xargs -r dirname)
-		ifeq (${LibAuDir},)
-			LibAuDir = /usr/lib
-		endif
-	endif
-endif
-
+LibAuDir ?= /usr/lib
 ExtlibPath = extlib/glibc
 ExtlibObj = au_nftw.o
 ifeq (${Glibc},no)
