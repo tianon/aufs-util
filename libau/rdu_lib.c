@@ -457,6 +457,8 @@ int closedir(DIR *dir)
 		fd = dirfd(dir);
 		if (fd < 0)
 			goto out;
+		errno = 0;
+
 		err = fstatfs(fd, &stfs);
 		if (err)
 			goto out;
