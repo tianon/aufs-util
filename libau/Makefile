@@ -31,7 +31,7 @@ LibSoObj += rdu64.o
 rdu64.c: rdu.c
 	ln -sf $< $@
 rdu64.o: override CPPFLAGS += -DRdu64
-.INTERMEDIATE.: rdu64.c
+.INTERMEDIATE: rdu64.c
 else
 CPPFLAGS += -I../${ExtlibPath}
 LibSoObj += error_at_line.o
@@ -39,7 +39,7 @@ LibSoHdr += ../${ExtlibPath}/error_at_line.h
 
 error_at_line.c: %: ../${ExtlibPath}/%
 	ln -sf $< $@
-.INTERMEDIATE.: error_at_line.c error_at_line.h
+.INTERMEDIATE: error_at_line.c error_at_line.h
 endif
 
 ${LibSoObj}: override CPPFLAGS += -DNDEBUG -D_REENTRANT -I.
