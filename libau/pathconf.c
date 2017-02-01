@@ -31,9 +31,9 @@
 #include "libau.h"
 
 static long (*real_pathconf)(const char *path, int name);
-LibAuDlFunc(pathconf)
+LibAuDlFunc(pathconf);
 static long (*real_fpathconf)(int fd, int name);
-LibAuDlFunc(fpathconf)
+LibAuDlFunc(fpathconf);
 
 static long do_fpathconf(int fd, int name)
 {

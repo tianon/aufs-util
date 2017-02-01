@@ -36,7 +36,9 @@ int libau_test_func(char *sym);
 static inline int libau_dl_##sym(void) \
 { \
 	return libau_dl((void *)&real_##sym, #sym); \
-}
+} \
+/* EXP section will be removed from the shared object */ \
+static char hooked_##sym[] __attribute__ ((section ("EXP"), used)) = #sym
 
 #define LibAuStr(sym)		#sym
 #define LibAuStr2(sym)		LibAuStr(sym)

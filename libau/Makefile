@@ -22,6 +22,10 @@ LibSoObj = libau.o \
 	pathconf.o
 LibSoHdr = libau.h rdu.h
 
+LibSoExport = $(addsuffix .exp, $(basename ${LibSoObj}))
+LibSoExportErr = $(addsuffix .err, ${LibSoExport})
+LibSoVerScript = verscript
+
 all: ${LibSo}
 
 ifeq (${Glibc},yes)
@@ -45,15 +49,36 @@ endif
 ${LibSoObj}: override CPPFLAGS += -DNDEBUG -D_REENTRANT -I.
 ${LibSoObj}: override CFLAGS += -fPIC
 ${LibSoObj}: %.o: %.c ${LibSoHdr}
+
+${LibSoExport}: %.exp: %.o
+	readelf -p EXP $< 2> $@.err |\
+	fgrep ']' |\
+	cut -f2 -d']' > $@
+	fgrep -v 'it does not exist' $@.err || true
+${LibSoVerScript}: ${LibSoExport}
+	{ \
+	echo '{ global:'; \
+	sort $^ |\
+	uniq |\
+	paste -d';' - /dev/null; \
+	echo 'local: *; };'; \
+	} > $@
+	${RM} ${LibSoExportErr}
+.INTERMEDIATE: ${LibSoExport} ${LibSoExportErr} ${LibSoVerScript}
+
 ${LibSo}: ${LibSo}.${LibSoMajor}
 	ln -sf $< $@
 ${LibSo}.${LibSoMajor}: ${LibSo}.${LibSoMajor}.${LibSoMinor}
 	ln -sf $< $@
 ${LibSo}.${LibSoMajor}.${LibSoMinor}: override LDFLAGS += -s
 ${LibSo}.${LibSoMajor}.${LibSoMinor}: override LDLIBS += -ldl -lpthread
+${LibSo}.${LibSoMajor}.${LibSoMinor}:| ${LibSoVerScript}
 ${LibSo}.${LibSoMajor}.${LibSoMinor}: ${LibSoObj}
-	${CC} --shared -Wl,-soname,${LibSo}.${LibSoMajor} ${LDFLAGS} \
-		-o $@ $^ ${LDLIBS}
+	${CC} --shared -Wl,-soname,${LibSo}.${LibSoMajor} \
+		-Wl,--version-script,${LibSoVerScript} \
+		${LDFLAGS} -o $@ $^ ${LDLIBS}
+	strip -R EXP $@
+#	readelf --syms --use-dynamic libau.so
 
 install_ulib: File = ${LibSo}.${LibSoMajor}.${LibSoMinor}
 install_ulib: Tgt = ${DESTDIR}${LibAuDir}
@@ -68,6 +93,7 @@ install: install_ulib
 
 clean:
 	${RM} ${LibSo} ${LibSo}.* ${LibSoObj} *~
+	${RM} ${LibSoExport} ${LibSoExportErr} ${LibSoVerScript}
 	for i in rdu64.c error_at_line.[ch]; \
 	do test -L $${i} && ${RM} $${i} || :; \
 	done
