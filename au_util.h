@@ -39,7 +39,7 @@ char *au_decode_mntpnt(char *src, char *dst, int len);
 #else
 #define AuFhsmStr ""
 #endif
-#define AuVersionGitBranch "aufs4.1"
+#define AuVersionGitBranch "aufs4.4"
 #define AuVersion "aufs-util for " AuVersionGitBranch AuFhsmStr " " AuRelease
 
 /*
