@@ -42,6 +42,15 @@ char *au_decode_mntpnt(char *src, char *dst, int len);
 #define AuVersionGitBranch "aufs4.4"
 #define AuVersion "aufs-util for " AuVersionGitBranch AuFhsmStr " " AuRelease
 
+#define DROPLVL		"droplvl"
+#define DROPLVL1	"noatime,dirperm1,udba=none"
+#define DROPLVL1R	"relatime,nodirperm1,udba=reval"
+#define DROPLVL2	"notrunc_xino,notrunc_xib"
+/* #define DROPLVL2R	"trunc_xino,trunc_xib" */
+#define DROPLVL2R	DROPLVL2
+#define DROPLVL3	"noplink,noxino"
+#define DROPLVL3R	"plink,xino=" AUFS_XINO_DEFPATH
+
 /*
  * error_at_line() is decleared with (__printf__, 5, 6) attribute,
  * and our compiler produces a warning unless args is not given.
