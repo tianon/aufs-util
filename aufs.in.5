@@ -495,7 +495,7 @@ The default is `0' (disable).
 See linux/Documentation/ABI/*/{sys,debug}fs\-aufs.
 
 .\" ----------------------------------------------------------------------
-.SH For the better performance
+.SH Gain the performance in return for the features
 In order to gain a better performance, there are a few steps. They are
 essentially to drop the features from aufs, and to gain a performance in
 return for them. You don't have to drop all of them. It may be too
@@ -536,10 +536,63 @@ this case, the size of XINO and XIB will grow only, not truncated. In
 other word, it is a time\-vs\-space issue.
 
 For the third and last step, try `noplink' and `noxino.'
-With these options, aufs behaves unreliably a little, which means lose
+With these options, aufs behaves un\-POSIX\-ly a little, which means lose
 the features maintaining the hard\-link (pseudo\-link) and the inode
 numbers. Some behaviours may surprise users, but many internal process
 will be skipped and the result performance will be better.
+
+For your convenience, mount.aufs(8) provides `\*[DROPLVL]=N'
+mount option. `N' means the level (see above) and you can specify either 1, 2
+or 3 (and their negative values, will be described soon). It is not a real mount option,
+which means it is not interpreted
+by kernel\-space. When this option is given, mount.aufs(8)
+translates it into several other (real) mount options, and passes them to
+kernel\-space as if they were originally specified. Currently there are 3 levels.
+.RS
+.nr step 1 1
+.IP \n[step] 4
+\*[DROPLVL1]
+.IP \n+[step]
+\*[DROPLVL2]
+.IP \n+[step]
+\*[DROPLVL3]
+.RE
+For example, when you give `\*[DROPLVL]=3', mount.aufs(8) converts
+it to `\*[DROPLVL1],\*[DROPLVL2],\*[DROPLVL3]'.
+
+For your more convenience, mount.aufs(8) provides the negative values
+for each level. Note that there is no level 0, and no difference between
+2 and \-2.
+The options in `\*[DROPLVL2]' are already implemented, but their design is not fixed
+(cf. External Inode Number Bitmap, Translation Table and Generation
+Table). And the current default value is `\*[DROPLVL2]', so technically
+speaking `\*[DROPLVL2]' is less important.
+.RS
+.nr step 1 1
+.IP \-\n[step] 4
+\*[DROPLVL1R]
+.IP \-\n+[step]
+\*[DROPLVL2R]
+.IP \-\n+[step]
+\*[DROPLVL3R]
+.RE
+The purpose of the negative values are to revert the effect of the
+positive values (counter\-level). Note the XINO path in
+`\-3'. In order to revert `noxino' in `\*[DROPLVL]=3', you
+need to specify the actual XINO path, but it is totally depending upon
+your environment, and mount.aufs(8) doesn't know about it and does nothing but
+provides the default path. So generally it will be necessary to append
+`xino=<your XINO path>' to `\*[DROPLVL]=\-3'.
+
+Reverting `noatime' to `relatime' is rather tricky. It is due to the
+behaviours of mount(8) and mount(2). You need to run
+`remount,strictatime' before `remount,\*[DROPLVL]=\-1'.
+
+Also note that the order of the mount options. For example, if you want to drop some
+features but keep UDBA level as default, then you can specify
+`\*[DROPLVL]=1,udba=reval'. If you write the reverse order as
+`udba=reval,\*[DROPLVL]=1', then `udba=none' in `\*[DROPLVL]=1' takes
+its effect and the udba level specified before \*[DROPLVL] will lose.
 
 .\" ----------------------------------------------------------------------
 .SH Git work\-tree and aufs
