@@ -2177,6 +2177,20 @@ utility reports you and asks whether to delete or not.
 It is recommended to execute /sbin/auchk for every writable branch
 filesystem before mounting aufs if the system experienced crash.
 
+In linux\-v4.5, copy_file_range(2) is introduced and aufs supports it.
+The systemcall supports only when the given two files exist on the same
+filesystem. In aufs world, two files must exist on the same physical
+filesystem, not on the logical aufs. The case of two files existing on
+the logically same aufs but physically different file system is not
+supported.
+For example, fileA and fileB are given, and fileA exists on the lower
+readonly branch in aufs, and fileB exists on the upper writable branch.
+When these two branches exist on the same filesystem, then aufs
+copy_file_range(2) should work. Otherwise it will return an error.
+In other words, aufs copy_file_range(2) doesn't incur the internal
+copyup since such behaviour doesn't fit the original purpose of
+copy_file_range(2).
+
 
 .\" ----------------------------------------------------------------------
 .SH EXAMPLES
