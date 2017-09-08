@@ -25,6 +25,7 @@ LibSoHdr = libau.h rdu.h
 LibSoExport = $(addsuffix .exp, $(basename ${LibSoObj}))
 LibSoExportErr = $(addsuffix .err, ${LibSoExport})
 LibSoVerScript = verscript
+STRIP ?= strip
 
 all: ${LibSo}
 
@@ -77,7 +78,7 @@ ${LibSo}.${LibSoMajor}.${LibSoMinor}: ${LibSoObj}
 	${CC} --shared -Wl,-soname,${LibSo}.${LibSoMajor} \
 		-Wl,--version-script,${LibSoVerScript} \
 		${LDFLAGS} -o $@ $^ ${LDLIBS}
-	strip -R EXP $@
+	${STRIP} -R EXP $@
 #	readelf --syms --use-dynamic libau.so
 
 install_ulib: File = ${LibSo}.${LibSoMajor}.${LibSoMinor}
