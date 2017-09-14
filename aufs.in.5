@@ -429,6 +429,27 @@ fs prohibits it by its permission bits.
 
 This feature may invite a security risk similar to the world writable
 upper branch. As this case, dirperm1 option will produce a warning too.
+.
+.TP
+.B dirren
+.TQ
+.B nodirren
+Activates or disactivates the special handling for renaming a directory
+(DIRREN) feature.
+In order to use this feature, CONFIG_AUFS_DIRREN has to be enabled and
+`dirren' mount option has to be specified too.
+
+By default (nodirren), aufs returns an error with EXDEV for the case of
+rename(2) a directory which exists on the multiple branches. Note that
+DIRREN is slow (I have not yet measured it though) since it loads and
+saves the list of the inode\-numbers per branch and the detailed
+information per branch.
+
+Note that `udba=notify' option may not work with DIRREN, since it is
+based upon the name, while DIRREN handles both of before\- and
+after\-renamed names. The internal name comparision may not work
+correctly. In this case, aufs behaves like the default `udba=reval' is
+specified.
 
 
 .\" ----------------------------------------------------------------------
@@ -522,7 +543,8 @@ size of aufs module will be larger a little, but the time\-performance
 
 .SS Mount option
 .
-As a first step, I'd recommend you to try `dirperm1' and `udba=none.'
+As a first step, I'd recommend you to try `dirperm1', `udba=none' and
+`nodirren.'
 The former prohibits aufs to dig down the lower branches in checking the
 directory permission bits, and the latter makes aufs not to watch the
 external modification, eg. by\-passing aufs (users' direct branch access).
@@ -2112,7 +2134,7 @@ If your xino file is on a hard drive, you also need to specify
 directory.
 
 To rename(2) directory may return EXDEV even if both of src and tgt
-are on the same aufs. When the rename\-src dir exists on multiple
+are on the same aufs, when `dirren' is not specified. When the rename\-src dir exists on multiple
 branches and the lower dir has child/children, aufs has to copyup all his
 children. It can be recursive copyup. Current aufs does not support
 such huge copyup operation at one time in kernel space, instead

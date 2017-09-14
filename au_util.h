@@ -33,7 +33,7 @@ static inline char *au_decode_mntpnt(char *src, char *dst, int len)
 char *au_decode_mntpnt(char *src, char *dst, int len);
 #endif
 
-#define AuRelease	"20170911"
+#define AuRelease	"20170918"
 #ifdef AUFHSM
 #define AuFhsmStr " with FHSM"
 #else
@@ -43,7 +43,7 @@ char *au_decode_mntpnt(char *src, char *dst, int len);
 #define AuVersion "aufs-util for " AuVersionGitBranch AuFhsmStr " " AuRelease
 
 #define DROPLVL		"droplvl"
-#define DROPLVL1	"noatime,dirperm1,udba=none"
+#define DROPLVL1	"noatime,dirperm1,udba=none,nodirren"
 #define DROPLVL1R	"relatime,nodirperm1,udba=reval"
 #define DROPLVL2	"notrunc_xino,notrunc_xib"
 /* #define DROPLVL2R	"trunc_xino,trunc_xib" */
