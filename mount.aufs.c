@@ -41,6 +41,8 @@
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof((x)[0]))
 #endif
 
+#define EPHEMERAL "ephemeral"
+
 #define DROPLVL_STR(lvl)		   \
 	{				   \
 		.set = DROPLVL ## lvl,	   \
@@ -65,7 +67,8 @@ static struct {
 
 #define DROPLVL_INVALID		ARRAY_SIZE(droplvl.str)
 
-enum { Remount, Bind, Drop, Fake, Update, Verbose, AuFlush, LastOpt };
+enum { Remount, Bind, Drop, Ephemeral, Fake, Update, Verbose, AuFlush,
+       LastOpt };
 static void test_opts(char opts[], unsigned char flags[])
 {
 	int c;
@@ -74,6 +77,7 @@ static void test_opts(char opts[], unsigned char flags[])
 		[Remount]	= "remount",
 		[Bind]		= "bind",
 		[Drop]		= DROPLVL,
+		[Ephemeral]	= EPHEMERAL,
 		NULL
 	};
 
@@ -106,6 +110,11 @@ static void test_opts(char opts[], unsigned char flags[])
 				AuFin("invalid value %ld, %s", l, droplvl.arg);
 			}
 			droplvl.val = l;
+			break;
+		case Ephemeral: /* equiv to droplvl=3 */
+			flags[Drop] = 1;
+			droplvl.arg = last;
+			droplvl.val = 3;
 			break;
 		}
 	}
@@ -170,7 +179,10 @@ static int drop_level(int argc, char **argv, int idx)
 		AuFin("internal error, src %p, l %zu, droplvl %p",
 		      src, l, droplvl.arg);
 	}
-	l -= sizeof(DROPLVL) - 1 + 2;	/* "=N" */
+	if (0 == strncmp(droplvl.arg, DROPLVL, sizeof(DROPLVL) - 1))
+		l -= sizeof(DROPLVL) - 1 + 2;	/* "=N" */
+	else
+		l -= sizeof(EPHEMERAL) - 1;
 
 	o = malloc(l);
 	t = droplvl.arg - src;

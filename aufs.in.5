@@ -434,7 +434,7 @@ upper branch. As this case, dirperm1 option will produce a warning too.
 .B dirren
 .TQ
 .B nodirren
-Activates or disactivates the special handling for renaming a directory
+Activates or deactivates the special handling for renaming a directory
 (DIRREN) feature.
 In order to use this feature, CONFIG_AUFS_DIRREN has to be enabled and
 `dirren' mount option has to be specified too.
@@ -447,7 +447,7 @@ information per branch.
 
 Note that `udba=notify' option may not work with DIRREN, since it is
 based upon the name, while DIRREN handles both of before\- and
-after\-renamed names. The internal name comparision may not work
+after\-renamed names. The internal name comparison may not work
 correctly. In this case, aufs behaves like the default `udba=reval' is
 specified.
 
@@ -581,6 +581,8 @@ kernel\-space as if they were originally specified. Currently there are 3 levels
 .RE
 For example, when you give `\*[DROPLVL]=3', mount.aufs(8) converts
 it to `\*[DROPLVL1],\*[DROPLVL2],\*[DROPLVL3]'.
+Also mount.aufs(8) provides `ephemeral' mount option which is equivalent
+to `\*[DROPLVL]=3'.
 
 For your more convenience, mount.aufs(8) provides the negative values
 for each level. Note that there is no level 0, and no difference between
