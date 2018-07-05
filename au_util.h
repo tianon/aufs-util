@@ -33,7 +33,7 @@ static inline char *au_decode_mntpnt(char *src, char *dst, int len)
 char *au_decode_mntpnt(char *src, char *dst, int len);
 #endif
 
-#define AuRelease	"20170918"
+#define AuRelease	"20180709"
 #ifdef AUFHSM
 #define AuFhsmStr " with FHSM"
 #else
