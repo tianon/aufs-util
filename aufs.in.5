@@ -998,6 +998,9 @@ LLONG_MAX). So the
 support\-able largest inode number on a branch is less than
 2305843009213693950 (LLONG_MAX/4\-1).
 This is the current limitation of aufs.
+Note that the xino-array feature which was introduced in aufs4.14 and
+later made this limitation obsolete.
+
 On 64bit environment, this limitation becomes more strict and the
 supported largest inode number is less than LLONG_MAX/8\-1.
 In order to estimate the size of the table for your readonly branch fs,
