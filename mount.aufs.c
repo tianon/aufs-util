@@ -22,7 +22,7 @@
  */
 
 #define _XOPEN_SOURCE	500	/* getsubopt */
-#define _BSD_SOURCE		/* dirfd */
+#define _DEFAULT_SOURCE		/* dirfd */
 
 #include <sys/types.h>
 #include <sys/wait.h>
