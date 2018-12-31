@@ -122,6 +122,8 @@ ${Bin}: override LDFLAGS += -static -s
 ${Bin}: LDLIBS = -L. -lautil
 ${BinObj}: %.o: %.c ${LibUtilHdr} ${LibUtil}
 
+ARFLAGS := ${ARFLAGS}U
+export ARFLAGS
 ${LibUtilObj}: %.o: %.c ${LibUtilHdr}
 #${LibUtil}: ${LibUtil}(${LibUtilObj})
 ${LibUtil}: $(foreach o, ${LibUtilObj}, ${LibUtil}(${o}))
