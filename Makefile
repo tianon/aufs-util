@@ -66,8 +66,9 @@ define test_glibc
 		echo no; } |\
 		tee ${LastTestGlibc})
 endef
-$(filter-out clean, ${MAKECMDGOALS} all): \
+pre:
 	$(eval Glibc=$(call test_glibc, ${CC}, ver.c))
+$(filter-out clean, ${MAKECMDGOALS} all): pre
 #$(warning Glibc=${Glibc})
 
 LibAuDir ?= /usr/lib
