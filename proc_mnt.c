@@ -73,11 +73,13 @@ int au_proc_getmntent(char *mntpnt, struct mntent *rent)
 	struct mntent *p, e;
 	FILE *fp;
 	char a[4096 + 1024], path[PATH_MAX], *decoded;
+	int retry=2;
 
 	decoded = au_decode_mntpnt(mntpnt, path, sizeof(path));
 	if (!decoded)
 		AuFin("au_decode_mntpnt");
 
+again:
 	fp = setmntent(ProcMounts, "r");
 	if (!fp)
 		AuFin(ProcMounts);
@@ -96,6 +98,8 @@ int au_proc_getmntent(char *mntpnt, struct mntent *rent)
 	endmntent(fp);
 
 	if (!found) {
+		if (retry-- > 0)
+			goto again;
 		errno = EINVAL;
 		AuFin("%s, %s", mntpnt, decoded);
 	}
