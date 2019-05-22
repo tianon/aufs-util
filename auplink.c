@@ -16,11 +16,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <sys/vfs.h>    /* or <sys/statfs.h> */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+#include <linux/aufs_type.h>
 #include "au_util.h"
 
 static void usage(char *me)
@@ -38,6 +40,7 @@ static void usage(char *me)
 int main(int argc, char *argv[])
 {
 	int err, cmd;
+	struct statfs stfs;
 	char *cwd;
 
 	if (argc != 3)
@@ -58,6 +61,13 @@ int main(int argc, char *argv[])
 	err = chdir(argv[1]);
 	if (err)
 		AuFin("chdir");
+	err = statfs(".", &stfs);
+	if (err)
+		AuFin("statfs");
+	if (stfs.f_type != AUFS_SUPER_MAGIC) {
+		errno = EINVAL;
+		AuFin("Not aufs, %s\n", argv[1]);
+	}
 	cwd = getcwd(NULL, 0); /* glibc */
 	if (!cwd)
 		AuFin("getcwd");
