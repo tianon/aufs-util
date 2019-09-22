@@ -23,7 +23,14 @@
 
 int main(int argc, char *argv[])
 {
-	if (!strncmp(AUFS_VERSION, "4.x-rcN", 7))
+	int err;
+	regex_t preg;
+	const char *pat = "^4\\.(19|20)"; /* aufs4.19 and later */
+
+	err = regcomp(&preg, pat, REG_EXTENDED | REG_NOSUB);
+	assert(!err); /* internal error */
+
+	if (!regexec(&preg, AUFS_VERSION, 0, NULL, 0))
 		return 0;
 
 	puts("Wrong version!\n"
