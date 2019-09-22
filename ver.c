@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 {
 	int err;
 	regex_t preg;
-	const char *pat = "^4\\.(1[4-9]|[2-9][0-9])"; /* aufs4.14 and later */
+	const char *pat = "^4\\.(19|20)"; /* aufs4.19 and later */
 
 	err = regcomp(&preg, pat, REG_EXTENDED | REG_NOSUB);
 	assert(!err); /* internal error */
