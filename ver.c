@@ -17,23 +17,13 @@
  */
 
 #include <linux/aufs_type.h>
-#undef NDEBUG
-#include <assert.h>
-#include <regex.h>
 #include <stdio.h>
 #include <string.h>
 #include "au_util.h"
 
 int main(int argc, char *argv[])
 {
-	int err;
-	regex_t preg;
-	const char *pat = "^5\\."; /* aufs5.0 and later */
-
-	err = regcomp(&preg, pat, REG_EXTENDED | REG_NOSUB);
-	assert(!err); /* internal error */
-
-	if (!regexec(&preg, AUFS_VERSION, 0, NULL, 0))
+	if (!strncmp(AUFS_VERSION, "5.x-rcN", 7))
 		return 0;
 
 	puts("Wrong version!\n"
