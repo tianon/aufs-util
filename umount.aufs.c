@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 {
 	int err, i, j;
 	struct mntent ent;
-	char *mntpnt, *av[argc + 1];
+	char *mntpnt, *av[argc + 3];
 
 	if (argc < 2) {
 		puts(AuVersion);
