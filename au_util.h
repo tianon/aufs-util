@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2005-2019 Junjiro R. Okajima
+ * Copyright (C) 2005-2020 Junjiro R. Okajima
  *
  * This program, aufs is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ static inline char *au_decode_mntpnt(char *src, char *dst, int len)
 char *au_decode_mntpnt(char *src, char *dst, int len);
 #endif
 
-#define AuRelease	"20191223"
+#define AuRelease	"20200127"
 #ifdef AUFHSM
 #define AuFhsmStr " with FHSM"
 #else
