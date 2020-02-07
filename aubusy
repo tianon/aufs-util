@@ -75,7 +75,7 @@ fi
 # here we go
 lsof -FDiR "$mntpnt" |
 awk -v g_ppid=$$ \
-	-v g_dev=$(stat -c %D "$mntpnt") \
+	-v g_dev=0x$(stat -c %D "$mntpnt") \
 	-v root=$AUFS_ROOT_INO \
 '
 function pr()
@@ -98,7 +98,7 @@ function pr()
 	next;
 }
 /^D/ {
-	dev = substr($0, 4);
+	dev = substr($0, 2);
 	if (dev != g_dev)
 		do_print = 0;
 	next;
@@ -115,6 +115,7 @@ END {
 #tee /dev/tty |
 while read pid ino
 do
+#set -x
 	# it may be very long and shell may not be able to handle as parameters
 	echo "$ino" |
 	xargs -r auibusy "$mntpnt" $bindex |
