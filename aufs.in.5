@@ -2218,6 +2218,17 @@ In other words, aufs copy_file_range(2) doesn't incur the internal
 copyup since such behaviour doesn't fit the original purpose of
 copy_file_range(2).
 
+AppArmor (and any other name-based LSM) is not a good co-worker for aufs.
+They work based upon the accessed pathname and judges the access for
+that file is good or bad.
+But the pathname may exist two types in aufs world, one is the
+underlying branch path and the other is the logical/virtual aufs path.
+your AppArmor profile may
+contain the branch path by default, but you need the
+aufs path too.  Otherwise, AppArmor prohibits acessing aufs path.
+(In the end of 2019 and early in 2020, I've posted to AppArmor ML and
+asked "How does ALIAS work?" because I thought ALIAS rule can solve
+this problem, but got no good response.)
 
 .\" ----------------------------------------------------------------------
 .SH EXAMPLES
