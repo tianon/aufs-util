@@ -2230,6 +2230,13 @@ aufs path too.  Otherwise, AppArmor prohibits acessing aufs path.
 asked "How does ALIAS work?" because I thought ALIAS rule can solve
 this problem, but got no good response.)
 
+For SELinux, you need to tell SELinux that aufs supports XATTR by
+these commands.
+.nf
+$ echo '(fsuse xattr aufs (system_u object_r fs_t ((s0)(s0))))' > aufs.cil
+$ sudo semodule -i aufs.cil
+.fi
+
 .\" ----------------------------------------------------------------------
 .SH EXAMPLES
 The mount options are interpreted from left to right at remount-time.
