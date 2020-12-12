@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 {
 	int err;
 	regex_t preg;
-	const char *pat = "^5\\."; /* aufs5.0 and later */
+	const char *pat = "^5\\.([89]|[1-9][0-9])"; /* aufs5.8 and later */
 
 	err = regcomp(&preg, pat, REG_EXTENDED | REG_NOSUB);
 	assert(!err); /* internal error */
