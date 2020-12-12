@@ -125,8 +125,6 @@ ${BinObj}: %.o: %.c ${LibUtilHdr} ${LibUtil}
 
 ARFLAGS := ${ARFLAGS}U
 export ARFLAGS
-ProcMounts_Times ?= 1
-proc_mnt.o: CPPFLAGS += -DProcMounts_Times=${ProcMounts_Times}
 ${LibUtilObj}: %.o: %.c ${LibUtilHdr}
 #${LibUtil}: ${LibUtil}(${LibUtilObj})
 ${LibUtil}: $(foreach o, ${LibUtilObj}, ${LibUtil}(${o}))

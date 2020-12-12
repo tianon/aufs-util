@@ -67,24 +67,12 @@ Makefile in this tree has some customizable make-variables.
 - LibAuDir
   specify the directory path to install the shared object library
   libau.so. The default is /usr/lib.
-  This make-variable will be useful for the system who has both of
+  This make variable will be useful for the system who has both of
   glibc and musl-libc, or the system who has x86_64 and i686 libraries.
 
 - MountCmd, UmountCmd
   specify mount(8) and umount(8) in full path.  By default, they are
   "/bin/mount" and "/bin/umount" individually.
-
-- ProcMounts_Times
-  The utilities in this repository, especialy auplink(8), read
-  /proc/mounts in order to retrieve the mounted aufs information.  But
-  /proc/mounts is not reliable for this use and sometimes it doesn't
-  show the mounted entry.  As a workaround for this issue, we need to
-  read /proc/mounts several times, and this make-variable represents the
-  times to read.  As far as I know, the problem appears only when there
-  are many mountpoints,  and other tasks issue mount(2) and umount(2)
-  systemcalls during reading /proc/mounts.  If you don't meet such
-  problem, then you can ignore this make-variable.  The default value is
-  1 which means reading /proc/mounts only once.
 
 o /sbin/mount.aufs, /sbin/umount.aufs
   Helpers for util-linux-ng package.  You should NOT invoke them

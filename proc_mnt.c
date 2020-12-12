@@ -69,7 +69,7 @@ static void copy_ent(struct mntent *dst, struct mntent *src)
  */
 int au_proc_getmntent(char *mntpnt, struct mntent *rent)
 {
-	int found, i;
+	int found;
 	struct mntent *p, e;
 	FILE *fp;
 	char a[4096 + 1024], path[PATH_MAX], *decoded;
@@ -78,28 +78,22 @@ int au_proc_getmntent(char *mntpnt, struct mntent *rent)
 	if (!decoded)
 		AuFin("au_decode_mntpnt");
 
+	fp = setmntent(ProcMounts, "r");
+	if (!fp)
+		AuFin(ProcMounts);
+
 	/* find the last one */
-	/*
-	 * Unfortunately we've met a case which "/proc/mounts" doesn't show the
-	 * entry just mounted.  So we try searching by getmntent_r(3) at most
-	 * 'ProcMounts_Times'.  This macro is specfied at the compile-time.
-	 */
 	memset(rent, 0, sizeof(*rent));
 	found = 0;
-	for (i = 0; !found && i < ProcMounts_Times; i++) {
-		fp = setmntent(ProcMounts, "r");
-		if (!fp)
-			AuFin(ProcMounts);
-		while ((p = getmntent_r(fp, &e, a, sizeof(a))))
-			if (!strcmp(p->mnt_dir, decoded)) {
-				Dpri("%s, %s, %s, %s, %d, %d\n",
-				     p->mnt_fsname, p->mnt_dir, p->mnt_type,
-				     p->mnt_opts, p->mnt_freq, p->mnt_passno);
-				copy_ent(rent, p);
-				found = 1;
-			}
-		endmntent(fp);
-	}
+	while ((p = getmntent_r(fp, &e, a, sizeof(a))))
+		if (!strcmp(p->mnt_dir, decoded)) {
+			Dpri("%s, %s, %s, %s, %d, %d\n",
+			     p->mnt_fsname, p->mnt_dir, p->mnt_type,
+			     p->mnt_opts, p->mnt_freq, p->mnt_passno);
+			copy_ent(rent, p);
+			found = 1;
+		}
+	endmntent(fp);
 
 	if (!found) {
 		errno = EINVAL;
