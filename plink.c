@@ -23,7 +23,6 @@
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <sys/vfs.h>    /* or <sys/statfs.h> */
 #include <dirent.h>
 #include <fcntl.h>
 #include <mntent.h>
@@ -271,13 +270,6 @@ int au_plink(char cwd[], int cmd, unsigned int flags, int *fd)
 	struct mntent ent;
 	char *p, si[3 + sizeof(unsigned long long) * 2 + 1];
 	union aufs_brinfo *brinfo;
-	struct statfs stfs;
-
-	err = statfs(cwd, &stfs);
-	if (err)
-		AuFin("internal error, %s", cwd);
-	if (stfs.f_type != AUFS_SUPER_MAGIC)
-		AuFin("%s is not aufs", cwd);
 
 	err = au_proc_getmntent(cwd, &ent);
 	if (err)
