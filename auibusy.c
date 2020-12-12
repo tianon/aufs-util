@@ -18,7 +18,6 @@
 
 #include <sys/ioctl.h>
 #include <sys/types.h>
-#include <sys/vfs.h>    /* or <sys/statfs.h> */
 #include <dirent.h>
 #include <errno.h>
 #include <stdio.h>
@@ -61,7 +60,6 @@ int main(int argc, char *argv[])
 	struct aufs_ibusy ibusy;
 	char a[16], *eprefix;
 	DIR *dp;
-	struct statfs stfs;
 
 	err = -1;
 	errno = EINVAL;
@@ -76,15 +74,6 @@ int main(int argc, char *argv[])
 	if (!dp)
 		goto out;
 	fd = dirfd(dp);
-	err = fstatfs(fd, &stfs);
-	if (err) {
-		eprefix = "fstatfs";
-		goto out;
-	}
-	if (stfs.f_type != AUFS_SUPER_MAGIC) {
-		errno = EINVAL;
-		goto out;
-	}
 
 	eprefix = argv[2];
 	errno = 0;

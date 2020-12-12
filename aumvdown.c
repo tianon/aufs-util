@@ -19,7 +19,6 @@
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/vfs.h>    /* or <sys/statfs.h> */
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -121,7 +120,6 @@ int main(int argc, char *argv[])
 {
 	int err, fd, i, c;
 	unsigned int user_flags;
-	struct statfs stfs;
 	struct aufs_mvdown mvdown = {
 		.flags = 0
 	};
@@ -204,15 +202,6 @@ int main(int argc, char *argv[])
 		fd = open(argv[i], O_RDONLY);
 		if (fd < 0)
 			AuFin(argv[i]);
-
-		err = fstatfs(fd, &stfs);
-		if (err)
-			AuFin("statfs");
-		if (stfs.f_type != AUFS_SUPER_MAGIC) {
-			errno = EINVAL;
-			AuFin("Not aufs, %s\n", argv[i]);
-		}
-
 		err = ioctl(fd, AUFS_CTL_MVDOWN, &mvdown);
 		if (err)
 			AuMvDownFin(&mvdown, argv[i]);
