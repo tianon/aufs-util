@@ -1288,6 +1288,12 @@ or may not be accessible through both of old and new name.
 Because aufs caches various information about the files on
 branches. And the cache still remains after UDBA.
 
+.\" You might have experienced `bogus cache' problem around the network
+.\" filesystems such like NFS, which is a similar problem.
+.\" When your branch is a network filesystem (technically speaking, any
+.\" filesystem who has its ->d_revalidate() operation), or you are going
+.\" to export your aufs mount via NFS, `udba=none' is strongly discoureged.
+
 Aufs has a mount option named `udba' which specifies the test level at
 access time whether UDBA was happened or not.
 .
